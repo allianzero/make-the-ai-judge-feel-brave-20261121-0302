@@ -41,6 +41,11 @@ function main(): void {
   if (ENTRY.trim().length === 0) {
     throw new Error("entry must not be only white space");
   }
+  // Control characters are not words: refuse them rather than writing
+  // bytes the gate or the judge could read as something other than text.
+  if (/[\u0000-\u001F\u007F]/.test(ENTRY)) {
+    throw new Error("entry must not contain control characters");
+  }
 
   mkdirSync("/output", { recursive: true });
   writeFileSync(OUTPUT_PATH, ENTRY, "utf8");
